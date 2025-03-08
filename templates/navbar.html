@@ -1,0 +1,21 @@
+<nav class="max-w-8xl flex justify-between text-center mx-auto py-4 px-6 bg-gray-800">
+    <div class="logo">
+        <a class="text-2xl text-white" href="/">Quantum Stack</a>
+    </div>
+
+    <div class="menu flex space-x-4">
+        
+        {% if request.user.is_authenticated %}
+
+        <a href="{% url 'logout' %}" class="flex bg-red-800 hover:bg-red-900 px-2 p-1 text-sm rounded text-white">
+        <span>Logout</span>
+        </a>					
+        {% else %}
+        <a href="{% url 'login_user' %}" class="flex bg-teal-800 hover:bg-teal-900 px-2 p-1 text-sm rounded text-white">
+            <div></div>
+            <span>Login</span>
+        </a>
+        {% endif %}
+    </div>
+</nav>
+	

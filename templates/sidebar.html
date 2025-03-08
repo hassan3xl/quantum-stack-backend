@@ -1,0 +1,35 @@
+<!-- templates/sidebar.html -->
+<div class="bg-gray-800 h-screen text-white h-82 w-64 flex flex-col">
+    <div class="p-4 text-center font-bold text-xl border-b border-gray-600">
+       <a href="{% url 'AdminDashboard' %}"> Admin Dashboard</a>
+    </div>
+    <nav class="flex-grow mt-4">
+        <ul class="space-y-2">
+            <li>
+                <a href="{% url 'admin_manage_users' %}" class="block px-4 py-2 hover:bg-gray-700 rounded">
+                    Manage Users
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_manage_products' %}" class="block px-4 py-2 hover:bg-gray-700 rounded">
+                    Manage Products
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'category_management' %}" class="block px-4 py-2 hover:bg-gray-700 rounded">
+                    Manage Product Categories
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_settings' %}" class="block px-4 py-2 hover:bg-gray-700 rounded">
+                    Settings
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="p-4 border-t border-gray-600">
+        <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-gray-700 rounded">
+            Logout
+        </a>
+    </div>
+</div>
