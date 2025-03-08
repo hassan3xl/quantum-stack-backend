@@ -186,12 +186,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://vercel.com",
     'https://quantum-stack-backend.onrender.com',
     'https://quantum-stack-backend.onrender.com',
+    'quantum-stack-backend.onrender.com',
     
     'https://quantum-stack.vercel.app',
-    'https://quantum-stack.vercel.app'
+    'https://quantum-stack.vercel.app',
+    'quantum-stack.vercel.app',
     
-    
-
 ]
 
 ALLOWED_HOSTS = [
@@ -201,17 +201,13 @@ ALLOWED_HOSTS = [
     'https://quantum-stack-backend.onrender.com',
     
     'quantum-stack.vercel.app',
-    'https://quantum-stack.vercel.app'
-    
-    
+    'https://quantum-stack.vercel.app',    
 ]
+
 CSRF_TRUSTED_ORIGINS = [
     'https://quantum-stack-backend.onrender.com',
     'https://quantum-stack-backend.onrender.com',
     
     'https://quantum-stack.vercel.app',
     'https://quantum-stack.vercel.app'
-    
-
-
 ]
