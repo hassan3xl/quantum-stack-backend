@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
+from urllib.parse import urlparse
+
+load_dotenv()
 
 
 
@@ -111,10 +115,24 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Add these at the top of your settings.py
+import os
+from dotenv import load_dotenv
+from urllib.parse import urlparse
+
+load_dotenv()
+
+# Replace the DATABASES section of your settings.py with this
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': tmpPostgres.path.replace('/', ''),
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
     }
 }
 
@@ -166,8 +184,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://vercel.com",
-    'quantum-stack-backend.onrender.com',
-    'quantum-stack.vercel.app',
+    'https://quantum-stack-backend.onrender.com',
+    'https://quantum-stack-backend.onrender.com',
+    
+    'https://quantum-stack.vercel.app',
+    'https://quantum-stack.vercel.app'
+    
     
 
 ]
@@ -176,13 +198,20 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'quantum-stack-backend.onrender.com',
+    'https://quantum-stack-backend.onrender.com',
+    
     'quantum-stack.vercel.app',
+    'https://quantum-stack.vercel.app'
     
     
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'quantum-stack-backend.onrender.com',
-    'quantum-stack.vercel.app',
+    'https://quantum-stack-backend.onrender.com',
+    'https://quantum-stack-backend.onrender.com',
+    
+    'https://quantum-stack.vercel.app',
+    'https://quantum-stack.vercel.app'
+    
 
 
 ]

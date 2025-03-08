@@ -5,5 +5,7 @@ django
 django-cors-headers
 
 gunicorn
+python-dotenv
+psycopg2-binary
 
 
