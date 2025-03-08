@@ -161,4 +161,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://vercel.com",
+    'quantum-stack-backend.onrender.com',
+    'quantum-stack.vercel.app',
+    
+
+]
+
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'quantum-stack-backend.onrender.com',
+    'quantum-stack.vercel.app',
+    
+    
+]
+CSRF_TRUSTED_ORIGINS = [
+    'quantum-stack-backend.onrender.com',
+    'quantum-stack.vercel.app',
+
+
+]
