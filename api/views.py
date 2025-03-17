@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import NotAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 # from django.core.mail import send_mail
@@ -45,17 +47,23 @@ class ProjectDetailView(APIView):
 class ProfileView(APIView):
     def get(self, request):
         user = request.user
-        # user_data = ProfileSerializer(user).data
-
+        
+        # Get or create profile for the user
+        profile, created = Profile.objects.get_or_create(user=user)
+        
         # Fetch internship and project data
         internships = Internship.objects.filter(intern=user)
         projects = Project.objects.filter(user=user)
-        user_data = Profile.objects.filter(user=user)
-
-        user_data['internships'] = InternshipSerializer(internships, many=True).data
-        user_data['projects'] = ProjectSerializer(projects, many=True).data
-
-        return Response(user_data, status=status.HTTP_200_OK)
+        
+        # Serialize profile data
+        profile_data = ProfileSerializer(profile).data
+        
+        # Add related data to the response
+        profile_data['internships'] = InternshipSerializer(internships, many=True).data
+        profile_data['projects'] = ProjectSerializer(projects, many=True).data
+        
+        return Response(profile_data, status=status.HTTP_200_OK)
+    
      
 class ValidateInternshipView(APIView):
     permission_classes = [IsAuthenticated]
@@ -129,27 +137,94 @@ class SubmitInitialApplicationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+# Registration View
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        if not username or not password:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+        # Validate input
+        if not email or not password:
+            return Response(
+                {"error": "Email and password are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        if CustomUser.objects.filter(username=username).exists():
-            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        # Check if email already exists
+        if CustomUser.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email already exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        user = CustomUser.objects.create_user(
-            username=username,
-            password=password,
-        )
+        try:
+            # Create user
+            user = CustomUser.objects.create_user(
+                email=email,
+                password=password
+            )
+            
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                "message": "User registered successfully",
+                "access_token": str(refresh.access_token),
+                "refresh_token": str(refresh)
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-
+# Login View
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
-    class CustomTokenObtainPairView(TokenObtainPairView):
-        pass
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        # Validate input
+        if not email or not password:
+            return Response(
+                {"error": "Email and password are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Authenticate user
+            user = CustomUser.objects.get(email=email)
+            if not user.check_password(password):
+                return Response(
+                    {"error": "Invalid credentials"},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                "message": "Login successful",
+                "access_token": str(refresh.access_token),
+                "refresh_token": str(refresh)
+            }, status=status.HTTP_200_OK)
+            
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
