@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import Internship, CustomUser, Course, CourseMaterial, Timetable, InternshipApplication
+from main.models import Internship, Profile, CustomUser, Course, CourseMaterial, Timetable, InternshipApplication
 
 from rest_framework import serializers
 from main.models import Project
@@ -12,7 +12,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'first_name', 'last_name', 'is_staff', 'is_active']
+        fields = ['id', 'email', 'username', 'is_staff', 'is_active']
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['id', 'user', 'profile_pic', 'email', 'first_name', 'last_name', 'date_of_birth']
+        
 class InternshipApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = InternshipApplication

@@ -1,11 +1,11 @@
 from django.contrib import admin
-from main.models import CustomUser, Project, Internship, Internship, Course, CourseMaterial, Timetable, InternshipApplication
+from main.models import CustomUser, Project, Profile, Internship, Internship, Course, CourseMaterial, Timetable, InternshipApplication
 
 
 
 admin.site.register(CustomUser)
 admin.site.register(Project)
-
+admin.site.register(Profile)
 admin.site.register(Internship)
 admin.site.register(InternshipApplication)
 

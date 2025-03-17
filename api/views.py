@@ -3,8 +3,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from main.models import CustomUser, Timetable, Internship, Project
-from .serializers import InternshipSerializer, CustomUserSerializer, ProjectSerializer, TimetableSerializer, InternshipApplicationSerializer
+from main.models import CustomUser, Timetable, Internship, Project, Profile
+from .serializers import InternshipSerializer, ProfileSerializer, ProjectSerializer, TimetableSerializer, InternshipApplicationSerializer
 from django.contrib.auth import get_user_model 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -45,11 +45,12 @@ class ProjectDetailView(APIView):
 class ProfileView(APIView):
     def get(self, request):
         user = request.user
-        user_data = CustomUserSerializer(user).data
+        # user_data = ProfileSerializer(user).data
 
         # Fetch internship and project data
         internships = Internship.objects.filter(intern=user)
         projects = Project.objects.filter(user=user)
+        user_data = Profile.objects.filter(user=user)
 
         user_data['internships'] = InternshipSerializer(internships, many=True).data
         user_data['projects'] = ProjectSerializer(projects, many=True).data
@@ -126,22 +127,6 @@ class SubmitInitialApplicationView(APIView):
             # self.send_application_email(serializer.validated_data['email'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # def send_application_email(self, email):
-    #     # Implement email sending logic here
-    #     subject = "Complete Your Internship Application"
-    #     message = f"Thank you for your interest! Please complete your application here: [Link to Form]"
-    #     from_email = "noreply@quantumstack.com"
-    #     recipient_list = [email]
-    #     send_mail(subject, message, from_email, recipient_list)
-
-
-
-
-
-
-
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')

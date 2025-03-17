@@ -186,11 +186,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://vercel.com",
     'https://quantum-stack-backend.onrender.com',
     'https://quantum-stack-backend.onrender.com',
-    'quantum-stack-backend.onrender.com',
-    
-    'https://quantum-stack.vercel.app',
-    'https://quantum-stack.vercel.app',
-    'quantum-stack.vercel.app',
+    "https://quantum-stack-backend.onrender.com",
+    "https://quantum-stack.vercel.app",
     
 ]
 

@@ -3,7 +3,7 @@ djangorestframework
 djangorestframework-simplejwt
 django
 django-cors-headers
-
+pillow
 gunicorn
 python-dotenv
 psycopg2-binary

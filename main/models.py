@@ -19,6 +19,15 @@ class ContactUs(models.Model):
     message = models.CharField(max_length=150)
     
 
+class Profile(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    email = models.EmailField(max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    date_of_birth = models.DateField()
+    
+
 class Project(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)  # Optional if user is logged in
     email = models.EmailField(validators=[EmailValidator()], null=False, blank=False)
@@ -101,11 +110,7 @@ class InternshipApplication(models.Model):
     
 class Internship(models.Model):
     intern = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='internships')  # Link to Course
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    email = models.EmailField(max_length=150)
-    date_of_birth = models.DateField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='internships')
     created_at = models.DateTimeField(auto_now_add=True)
     starting_date = models.DateField()
     completion_date = models.DateField()
@@ -135,7 +140,7 @@ class Internship(models.Model):
             raise ValidationError("Completion date must be after the starting date.")
 
     def __str__(self):
-        return f"{self.first_name} Internship ({self.course.title})"
+        return f"{self.intern.username} Internship ({self.course.title})"
 
 
 class CourseMaterial(models.Model):
