@@ -184,47 +184,24 @@ class RegisterView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-# Login View
-@method_decorator(csrf_exempt, name='dispatch')
-class LoginView(APIView):
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # You can add custom claims here if needed
+        return token
 
-        # Validate input
-        if not email or not password:
-            return Response(
-                {"error": "Email and password are required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
 
-        try:
-            # Authenticate user
-            user = CustomUser.objects.get(email=email)
-            if not user.check_password(password):
-                return Response(
-                    {"error": "Invalid credentials"},
-                    status=status.HTTP_401_UNAUTHORIZED
-                )
+        # Add user details to the response
+        data['user'] = {
+            'id': user.id,
+            'email': user.email,
+        }
+        return data
 
-            # Generate tokens
-            refresh = RefreshToken.for_user(user)
-            
-            return Response({
-                "message": "Login successful",
-                "access_token": str(refresh.access_token),
-                "refresh_token": str(refresh)
-            }, status=status.HTTP_200_OK)
-            
-        except CustomUser.DoesNotExist:
-            return Response(
-                {"error": "Invalid credentials"},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        except Exception as e:
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

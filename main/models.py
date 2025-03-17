@@ -57,7 +57,7 @@ class Profile(models.Model):
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True)
     
 
 class Project(models.Model):
